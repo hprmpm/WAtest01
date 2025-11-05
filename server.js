@@ -29,10 +29,16 @@ app.get("/", (_req, res) => {
   res.json({ ok: true, service: "quiz-generator-mock" });
 });
 
-app.post("/quiz", (req, res) => {
-  const content = req.body?.content;
-  if (!content || typeof content !== "object") {
-    return res.status(400).json({ error: "Bad Request: 'content' object is required." });
+// ★★★ 修正点 ★★★
+// app.post("/quiz", ...) から app.post("/", ...) へ変更
+app.post("/", (req, res) => {
+  // ★★★ 修正点 ★★★
+  // req.body?.content から req.body へ変更
+  const content = req.body; 
+
+  // バリデーションを content.id の存在チェックに変更
+  if (!content || typeof content !== "object" || !content.id) {
+    return res.status(400).json({ error: "Bad Request: 'id' in body is required." });
   }
 
   const quiz = {
@@ -40,7 +46,7 @@ app.post("/quiz", (req, res) => {
     meta: {
       ...dummyData.meta,
       sourceId: content.id ?? "dummy",
-      sourceTitle: content.title ?? "dummy",
+      sourceTitle: content.title ?? "dummy", // App.jsxは現在idしか送っていませんが、もしtitleも送るならここに入ります
     },
   };
 

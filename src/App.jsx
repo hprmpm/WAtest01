@@ -72,7 +72,7 @@ function App() {
     if (loading) return
     setLoading(true)
     try {
-      const raw = await postWithRetry({ id: content.id })
+      const raw = await postWithRetry(content)
       const normalized = normalizeQuiz(raw, content)
 
       if (!normalized?.question || !Array.isArray(normalized?.options)) {
